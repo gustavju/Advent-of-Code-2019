@@ -184,3 +184,4 @@ const part2 = async (withDisplay = false, delay = 50) => {
 
 module.exports.part2 = part2;
 module.exports.part1 = part1;
+module.exports.IntCodeComp = runIntCodeComp;
