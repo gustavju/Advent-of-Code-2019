@@ -4,33 +4,48 @@ let data = fs
   .split('')
   .map(Number);
 
-const BASE_PTRN = [0, 1, 0, -1];
+const basePattern = [0, 1, 0, -1];
 
-const getLastDigit = currSum =>
-  currSum.toString().split('')[currSum.toString().length - 1];
+const getLastDigit = sum => sum.toString().split('')[sum.toString().length - 1];
 
 const part1 = () => {
+  let digits = [...data];
   for (let phase = 0; phase < 100; phase++) {
-    let res = [];
-    for (let outerI = 1; outerI < data.length + 1; outerI++) {
-      let currSum = 0;
-      let baseDigitIndex = 0;
-      for (let innerI = 1; innerI < data.length + 1; innerI++) {
-        let innerDigit = data[innerI - 1];
-        if (innerI % outerI == 0) {
-          baseDigitIndex++;
-          if (baseDigitIndex >= BASE_PTRN.length) {
-            baseDigitIndex = 0;
-          }
+    for (let j = 0; j < digits.length; j++) {
+      let sum = 0;
+      let baseDigit = 0;
+      for (let i = 0; i < digits.length; i++) {
+        if ((i + 1) % (j + 1) == 0) {
+          baseDigit = baseDigit + 1 >= basePattern.length ? 0 : baseDigit + 1;
         }
-        currSum += innerDigit * BASE_PTRN[baseDigitIndex];
+        sum += digits[i] * basePattern[baseDigit];
       }
-      let digit = getLastDigit(currSum);
-      res.push(digit);
+      digits[j] = getLastDigit(sum);
     }
-    data = res;
   }
-  console.log(data.join('').substr(0, 8));
+  console.log(digits.slice(0, 8).join(''));
 };
 
 part1();
+// 68764632
+
+const repeatArray = (arr, repeats) =>
+  [].concat(...Array.from({ length: repeats }, () => arr));
+
+const part2 = () => {
+  const msgOffset = Number(data.slice(0, 7).join(''));
+  const times = Math.ceil((data.length * 10000 - msgOffset) / data.length);
+  const digits = repeatArray(data, times).slice(msgOffset % data.length);
+
+  for (let i = 0; i < 100; i++) {
+    for (let j = digits.length - 2; j >= 0; j--) {
+      const digit = digits[j] + digits[j + 1];
+      digits[j] = Math.abs(digit) % 10;
+    }
+  }
+
+  console.log(digits.slice(0, 8).join(''));
+};
+
+part2();
+// 52825021
