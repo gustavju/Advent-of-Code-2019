@@ -53,8 +53,49 @@ const part1 = () => {
     }
   }
   let beams = grid.filter(c => c.state === STATE.Beam);
-  display(grid);
+  //display(grid);
   console.log(beams.length);
 };
 
 part1();
+
+const part2 = () => {
+  const baseConfig = {
+    pointer: 0,
+    relativeBase: 0,
+    data: [...inputData],
+    queue: [],
+    done: false
+  };
+  let minY = 900;
+  let maxY = 1100;
+  let minX = 200;
+  let maxX = 400;
+  for (let row = minX; row < maxX; row++) {
+    for (let col = minY; col < maxY; col++) {
+      let deepCopy = JSON.parse(JSON.stringify(baseConfig));
+      deepCopy.queue.push(row);
+      deepCopy.queue.push(col);
+      let output1 = IntCodeComp(deepCopy)[0];
+      if (!output1) continue;
+
+      deepCopy = JSON.parse(JSON.stringify(baseConfig));
+      deepCopy.queue.push(row + 99);
+      deepCopy.queue.push(col);
+      let output2 = IntCodeComp(deepCopy)[0];
+      if (!output2) continue;
+
+      deepCopy = JSON.parse(JSON.stringify(baseConfig));
+      deepCopy.queue.push(row);
+      deepCopy.queue.push(col + 99);
+      let output3 = IntCodeComp(deepCopy)[0];
+      if (!output3) continue;
+
+      console.log(row * 10000 + col);
+      return;
+    }
+  }
+};
+part2();
+
+// 2610980
